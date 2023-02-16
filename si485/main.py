@@ -1,64 +1,125 @@
 import dash
-from dash import dcc
-from dash import html
-from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-import numpy as np
-from xgboost import XGBClassifier, Booster
+import dash_core_components as dcc
+import dash_html_components as html
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-app.title = 'Customer Churn'
-server = app.server
-
-mod = Booster({'nthread': 8})
-mod.load_model('xgb_churn')
+app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.layout = html.Div([
-    dbc.Row([html.H3(children='Customer Churn - Team 10')]),
-    dbc.Row([
-        dbc.Col(html.Label(children = 'Agreement Count'), width={"order": "first"}),
-        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'agreement_count', style={"width": "75%", 'display': 'inline-block'}),
-        html.Br(),
-        dbc.Col(html.Label(children = 'Total Labor Time'), width={"order": "first"}),
-        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'], '1', id = 'total_labor_time', style={"width": "75%", 'display': 'inline-block'}),
-        html.Br(),
-        dbc.Col(html.Label(children = 'Year'), width={"order": "first"}),
-        dcc.Dropdown(['2018', '2019', '2020', '2021', '2022'], '2022', id = 'year', style={"width": "75%", 'display': 'inline-block'}),
-        html.Br()
-    ], style={'columnCount': 3}),
-        dbc.Row([
-        dbc.Col(html.Label(children = 'Main Equipment Count'), width={"order": "first"}),
-        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'main_equipment_count', style={"width": "75%", 'display': 'inline-block'}),
-        html.Br(),
-                dbc.Col(html.Label(children = 'Previous Month Equipment Count'), width={"order": "first"}),
-        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'prev_main_equipment_count', style={"width": "75%", 'display': 'inline-block'}),
-        html.Br(),
-                dbc.Col(html.Label(children = 'First Month Equipment Count'), width={"order": "first"}),
-        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'first_main_equipment_count', style={"width": "75%", 'display': 'inline-block'}),
-        html.Br(),
-    ], style={'columnCount': 3}),
-    dbc.Row([
-        dbc.Col(html.Label(children='Contract Revenue Discounted'), width={"order": "first"}),
-        dbc.Col(dcc.Slider(min=0, max=10000, step = 500, value = 2500, id='contract_revenue_discounted')),
-        html.Br(),
-        dbc.Col(html.Label(children='Parts Cost'), width={"order": "first"}),
-        dbc.Col(dcc.Slider(min=0, max=1000, step = 100, value = 100, id='parts_cost')),
-        html.Br(),
-        dbc.Col(html.Label(children='Total Service Calls'), width={"order": "first"}),
-        dbc.Col(dcc.Slider(min=0, max=200, step = 10, value = 10, id='total_service_calls')),
-        html.Br(),
-        dbc.Col(html.Label(children='Tenure (Months)'), width={"order": "first"}),
-        dbc.Col(dcc.Slider(min=0, max=150, step = 10, value = 10, id='tenure')),
-        html.Br(),
-        dbc.Col(html.Label(children='Previous Month Contract Revenue Discounted'), width={"order": "first"}),
-        dbc.Col(dcc.Slider(min=0, max=10000, step = 500, value = 2000, id='prev_contract_revenue_discounted')),
-        html.Br(),
-        dbc.Col(html.Label(children='First Month Contract Revenue Discounted'), width={"order": "first"}),
-        dbc.Col(dcc.Slider(min=0, max=10000, step = 500, value = 1500, id='first_contract_revenue_discounted')),
-        html.Br()
-    ], style={'columnCount': 2}),
-], style = {'padding': '0px 0px 0px 25px', 'width': '90%'})
+    html.H3(children='Customer Churn - Team 10'),
+    html.Div([
+        dbc.Label('Year'),
+        dcc.Dropdown(['2022', '2021', '2020', '2019', '2018'], '2022', id='year'),
+        
+        dbc.Label('Agreement Count', ),
+        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='agreement_count'),
+        
+        dbc.Label('Total Labor Time', ),
+        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'], '1', id='total_labor_time'),
+        
+        dbc.Label('Main Equipment Count'),
+        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='main_equipment_count'),
+        
+        dbc.Label('Previous Month Equipment Count'),
+        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='prev_main_equipment_count'),
+        
+        dbc.Label('First Month Equipment Count'),
+        dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='first_main_equipment_count'),
+        
+        dbc.Label('Contract Revenue Discounted'),
+        dcc.Slider(0, 10000, 500, value=0, marks= None, id='contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
+        
+        dbc.Label('Parts Cost'),
+        dcc.Slider(0, 1000, 100, value=0, marks=None, id='parts_cost', tooltip={"placement": "bottom", "always_visible": True}),
+        
+        dbc.Label('Total Service Calls'),
+        dcc.Slider(0, 200, 10, value=0, marks=None, id='total_service_calls', tooltip={"placement": "bottom", "always_visible": True}),
+        
+        dbc.Label('Tenure (Months)'),
+        dcc.Slider(0, 150, 10, value=0, marks=None, id='tenure', tooltip={"placement": "bottom", "always_visible": True}),
+        
+        dbc.Label('Previous Month Contract Revenue Discounted'),
+        dcc.Slider(0, 10000, 500, value=0, marks=None, id='prev_contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
+        
+        dbc.Label('First Month Contract Revenue Discounted'),
+        dcc.Slider(0, 10000, 500, value=0, marks=None, id='first_contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
+        ], style={'width': '33.6%', 'margin-top': '3.5%', 'margin-left': '1.5%', 'margin-bottom': '3%', 'text-align': 'left', 'padding':'1%','background-color': '#f5f5f5', 'border': '1px solid #e3e3e3', 'border-radius': '4px'})
+])
+
+# import dash
+# from dash import dcc
+# from dash import html
+# from dash.dependencies import Input, Output, State
+# import dash_bootstrap_components as dbc
+# import numpy as np
+# from xgboost import XGBClassifier, Booster
+
+# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+# app.title = 'Customer Churn'
+# server = app.server
+
+# mod = Booster({'nthread': 8})
+# mod.load_model('xgb_churn')
+
+# app.layout = html.Div([
+#     dbc.Row([html.H3(children='Customer Churn - Team 10')]),
+#     dbc.Row([
+#         html.Div([
+#             dbc.Col(html.Label(children = 'Agreement Count'), width={"order": "first"}),
+#             dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'agreement_count', style={"width": "75%", 'display': 'inline-block', 'position': 'absolute'}),
+#         ], style={"position": "relative"}),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children = 'Total Labor Time'), width={"order": "first"}),
+#         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'], '1', id = 'total_labor_time', style={"width": "75%", 'display': 'inline-block'}),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children = 'Year'), width={"order": "first"}),
+#         dcc.Dropdown(['2018', '2019', '2020', '2021', '2022'], '2022', id = 'year', style={"width": "75%", 'display': 'inline-block'}),
+#         html.Br()
+#     ], style={'columnCount': 3}),
+    
+#     dbc.Row([
+#         dbc.Col(html.Label(children = 'Main Equipment Count'), width={"order": "first"}),
+#         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'main_equipment_count', style={"width": "75%", 'display': 'inline-block'}),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children = 'Previous Month Equipment Count'), width={"order": "first"}),
+#         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'prev_main_equipment_count', style={"width": "75%", 'display': 'inline-block'}),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children = 'First Month Equipment Count'), width={"order": "first"}),
+#         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id = 'first_main_equipment_count', style={"width": "75%", 'display': 'inline-block'}),
+#         html.Br(),
+#     ], style={'columnCount': 3}),
+        
+#     dbc.Row([
+#         dbc.Col(html.Label(children='Contract Revenue Discounted'), width={"order": "first"}),
+#         dbc.Col(dcc.Slider(min=0, max=10000, step = 500, value = 2500, id='contract_revenue_discounted')),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children='Parts Cost'), width={"order": "first"}),
+#         dbc.Col(dcc.Slider(min=0, max=1000, step = 100, value = 100, id='parts_cost')),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children='Total Service Calls'), width={"order": "first"}),
+#         dbc.Col(dcc.Slider(min=0, max=200, step = 10, value = 10, id='total_service_calls')),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children='Tenure (Months)'), width={"order": "first"}),
+#         dbc.Col(dcc.Slider(min=0, max=150, step = 10, value = 10, id='tenure')),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children='Previous Month Contract Revenue Discounted'), width={"order": "first"}),
+#         dbc.Col(dcc.Slider(min=0, max=10000, step = 500, value = 2000, id='prev_contract_revenue_discounted')),
+#         html.Br(),
+        
+#         dbc.Col(html.Label(children='First Month Contract Revenue Discounted'), width={"order": "first"}),
+#         dbc.Col(dcc.Slider(min=0, max=10000, step = 500, value = 1500, id='first_contract_revenue_discounted')),
+#         html.Br()
+#     ], style={'columnCount': 2}),
+# ], style = {'padding': '0px 0px 0px 25px', 'width': '50%'})
 
 # app.layout = html.Div([
 #     dbc.Row([html.H3(children='Chance of a Sack')]),
