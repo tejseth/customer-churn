@@ -4,6 +4,7 @@ from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import numpy as np
+import pandas as pd
 from xgboost import Booster, DMatrix
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -19,9 +20,6 @@ app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = html.Div([
     html.H3(children='Customer Churn - Team 10'),
     html.Div([
-        dbc.Label('Year'),
-        dcc.Dropdown(['2022', '2021', '2020', '2019', '2018', '2023'], '2022', id='year'),
-        
         dbc.Label('Agreement Count', ),
         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='agreement_count'),
         
@@ -38,7 +36,7 @@ app.layout = html.Div([
         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='first_main_equipment_count'),
         
         dbc.Label('Contract Revenue Discounted'),
-        dcc.Slider(0, 10000, 500, value=0, marks= None, id='contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
+        dcc.Slider(0, 10000, 500, value=36, marks= None, id='contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
         
         dbc.Label('Parts Cost'),
         dcc.Slider(0, 1000, 100, value=0, marks=None, id='parts_cost', tooltip={"placement": "bottom", "always_visible": True}),
@@ -47,7 +45,7 @@ app.layout = html.Div([
         dcc.Slider(0, 200, 10, value=0, marks=None, id='total_service_calls', tooltip={"placement": "bottom", "always_visible": True}),
         
         dbc.Label('Tenure (Months)'),
-        dcc.Slider(0, 150, 10, value=0, marks=None, id='tenure', tooltip={"placement": "bottom", "always_visible": True}),
+        dcc.Slider(0, 150, 10, value=11, marks=None, id='tenure', tooltip={"placement": "bottom", "always_visible": True}),
         
         dbc.Label('Previous Month Contract Revenue Discounted'),
         dcc.Slider(0, 10000, 500, value=0, marks=None, id='prev_contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
@@ -95,48 +93,13 @@ def update_output(n_clicks, year, agreement_count, total_labor_time,
         crd_change_first = float(contract_revenue_discounted) - float(first_contract_revenue_discounted)
         equipment_change_first = float(main_equipment_count) - float(first_main_equipment_count)
 
-        if year == "2018":
-            year_2018 = 1
-            year_2019 = 0
-            year_2020 = 0
-            year_2021 = 0
-            year_2022 = 0
-        elif year == "2019":
-            year_2018 = 0
-            year_2019 = 1
-            year_2020 = 0
-            year_2021 = 0
-            year_2022 = 0
-        elif year == "2020":
-            year_2018 = 0
-            year_2019 = 0
-            year_2020 = 1
-            year_2021 = 0
-            year_2022 = 0
-        elif year == "2021":
-            year_2018 = 0
-            year_2019 = 0
-            year_2020 = 0
-            year_2021 = 1
-            year_2022 = 0
-        elif year == "2022":
-            year_2018 = 0
-            year_2019 = 0
-            year_2020 = 0
-            year_2021 = 1
-            year_2022 = 1
-        else:
-            year_2018 = 0
-            year_2019 = 0
-            year_2020 = 0
-            year_2021 = 0
-            year_2022 = 1
-
 
         x = np.array([[float(agreement_count), float(contract_revenue_discounted), float(main_equipment_count),
         float(parts_cost), float(total_labor_time), float(total_service_calls), float(tenure), float(crd_change),
-        float(equipment_change), float(crd_change_first), float(equipment_change_first), float(year_2018),
-        float(year_2019), float(year_2020), float(year_2021), float(year_2022)]])
+        float(equipment_change), float(crd_change_first), float(equipment_change_first)]])
+
+        dtrain = DMatrix(x)
+        prediction = round(100*(mod.predict(dtrain)[0]), 1)
 
         dtrain = DMatrix(x)
         prediction = round(100*(mod.predict(dtrain)[0]), 1)
