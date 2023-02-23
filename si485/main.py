@@ -70,7 +70,6 @@ app.layout = html.Div([
     # Output('bar-1', component_property= 'figure'),
     Output('prediction output-1', 'children'),
     Input('submit-val', 'n_clicks'),
-    State('year', 'value'),
     State('agreement_count', 'value'),
     State('total_labor_time', 'value'),
     State('main_equipment_count', 'value'),
@@ -83,7 +82,7 @@ app.layout = html.Div([
     State('prev_contract_revenue_discounted', 'value'),
     State('first_contract_revenue_discounted', 'value'))
 
-def update_output(n_clicks, year, agreement_count, total_labor_time, 
+def update_output(n_clicks, agreement_count, total_labor_time, 
     main_equipment_count, prev_main_equipment_count, first_main_equipment_count,
     contract_revenue_discounted, parts_cost, total_service_calls, tenure,
     prev_contract_revenue_discounted, first_contract_revenue_discounted):
