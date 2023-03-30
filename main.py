@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from xgboost import Booster, DMatrix
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ['/design.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = 'Customer Churn'
 server = app.server
@@ -19,12 +19,13 @@ mod2.load_model('xgb_months')
 
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-app.layout = html.Div([
-    html.H3(children='Customer Churn - Team 10'),
-    html.Div([
+app.layout = dbc.Container([
+    dbc.Row([
+        html.H3(children='Service Express Churn Prediction Model'),
+        dbc.Col(html.Div([
+            
         dbc.Label('Agreement Count'),
         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], '1', id='agreement_count'),
-        
         dbc.Label('Total Labor Time'),
         dcc.Dropdown(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'], '1', id='total_labor_time'),
         
@@ -54,19 +55,22 @@ app.layout = html.Div([
         
         dbc.Label('First Month Contract Revenue Discounted'),
         dcc.Slider(0, 10000, 500, value=0, marks=None, id='first_contract_revenue_discounted', tooltip={"placement": "bottom", "always_visible": True}),
-        ], style={'width': '33.6%', 'margin-top': '3.5%', 'margin-left': '1.5%', 'margin-bottom': '3%', 'text-align': 'left', 'padding':'1%','background-color': '#f5f5f5', 'border': '1px solid #e3e3e3', 'border-radius': '4px'}),
+        
+        dbc.Row([
+            dbc.Col(html.Br()),
+            dbc.Col(dbc.Button('Predict', id='submit-val', n_clicks=0, color="primary",style={'font-size': '16px', 'width': '50%', 'background-color': 'white', 'color': 'black', 'border-color': 'grey', 'margin-top': '10%', 'margin-left': '-50%'})),
+        ], style={'margin-top': '-2%',}),
 
-        dbc.Row([
-            html.Br(),
-            dbc.Row([dbc.Button('Submit', id='submit-val', n_clicks=0, color="primary")]),
-            html.Br()
-        ]),
-        dbc.Row([
+        ], style={'width': '75%', 'height': '100%','margin-top': '3.5%', 'margin-left': '1.5%', 'margin-bottom': '3%', 'text-align': 'left', 'padding':'1%','background-color': '#f5f5f5', 'border': '1px solid #e3e3e3', 'border-radius': '4px'})),
+        
+        dbc.Col(html.Div([
             html.Br(),
             dbc.Row([html.Div(id='prediction output-1')]),
             html.Br()
-        ])
-])
+        ], style = {'margin-top': '35%', 'font-weight': 'bold', 'font-size': '25px'}))
+    ], style={'margin-top': '2%'}),
+], fluid=True)
+
 
 @app.callback(
     # Output('bar-1', component_property= 'figure'),
