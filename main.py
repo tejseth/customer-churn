@@ -66,8 +66,13 @@ app.layout = dbc.Container([
         dbc.Col(html.Div([
             html.Br(),
             dbc.Row([html.Div(id='prediction output-1')]),
-            html.Br()
-        ], style = {'margin-top': '35%', 'font-weight': 'bold', 'font-size': '25px'}))
+            html.Br(),
+            dbc.Row([
+                dbc.Col(html.Img(src='/assets/UMSI.png', style={'width': '50%', 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto', 'margin-top': '48%'})),
+                dbc.Col(html.Img(src='/assets/SE.png', style={'width': '50%', 'display': 'block', 'margin-right': 'auto',  'margin-top': '59%'}))
+            ], justify='center')
+        ], style={'margin-top': '15%', 'font-weight': 'bold', 'font-size': '25px'}))
+
     ], style={'margin-top': '2%'}),
 ], fluid=True)
 
@@ -107,8 +112,14 @@ def update_output(n_clicks, agreement_count, total_labor_time,
         prediction = round(100*(mod.predict(dtrain)[0]), 1)
         prediction2 = mod2.predict(dtrain)[0]
         prediction2 = round(prediction2, 1)
+        return html.Div([
+            html.Div([
+                html.Span(f"{prediction}% ", style={'font-size': '4rem', 'margin-bottom': '.75rem', 'color': 'red' if prediction > 10 else 'orange' if prediction > 5 else 'green'}),
+                html.Span("chance they churn", style={'font-size': '4rem', 'margin-bottom': '.75rem', 'color': 'black'})
+            ]),
+            html.Div(f"{round(prediction2, 1)} months until they churn", style={'font-size': '4rem', 'margin-top': '.75em'})
+        ])
 
-        return f'{prediction}% chance they churn | {prediction2} months until they churn'
 
 if __name__ == '__main__':
     app.run_server(debug=True)
