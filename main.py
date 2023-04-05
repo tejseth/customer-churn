@@ -117,9 +117,8 @@ def update_output(n_clicks, agreement_count, total_labor_time,
                 html.Span(f"{prediction}% ", style={'font-size': '4rem', 'margin-bottom': '.75rem', 'color': 'red' if prediction > 10 else 'orange' if prediction > 5 else 'green'}),
                 html.Span("chance they churn", style={'font-size': '4rem', 'margin-bottom': '.75rem', 'color': 'black'})
             ]),
-            html.Div(f"{round(prediction2, 1)} months until they churn", style={'font-size': '4rem', 'margin-top': '.75em'})
+            html.Div(f"{prediction2:.1f} months until they churn", style={'font-size': '4rem', 'margin-top': '.75em'})
         ])
-
 
 if __name__ == '__main__':
     app.run_server(debug=True)
